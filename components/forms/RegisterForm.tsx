@@ -17,6 +17,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { addUser } from "@/assets/api/user";
 
 type RegisterState = {
   email: string;
@@ -29,35 +30,51 @@ const RegisterForm = () => {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<RegisterState>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit: SubmitHandler<RegisterState> = (data) => {
-    setIsLoading(true)
+    setIsLoading(true);
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        setIsLoading(false)
-        if (data.accountType === "farmer") {
-          toast("Farmer account created", {
-            type: "success",
+        console.log(user);
+        setIsLoading(false);
+        addUser({
+          email: data.email,
+          type: data.accountType,
+        })
+          .then((value) => {
+            const userId = value._key.path.segments[1];
+            if (typeof window !== "undefined") {
+              localStorage.setItem("userId", userId);
+            }
+            if (data.accountType === "farmer") {
+              toast("Farmer account created", {
+                type: "success",
+              });
+              router.push("/en/onboarding");
+            } else {
+              toast("Personal account created", {
+                type: "success",
+              });
+              router.push("/en/");
+            }
+          })
+          .catch((error) => {
+            toast(`${error.message}`, {
+              type: "error",
+            });
+            setIsLoading(false);
           });
-          router.push("/en/onboarding/");
-        } else {
-          toast("Personal account created", {
-            type: "success",
-          });
-          router.push("/en/");
-        }
       })
       .catch((error) => {
-        toast(`${error.message}`);
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        // console.log(errorCode, errorMessage)
+        toast(`${error.message}`, {
+          type: "error",
+        });
+        setIsLoading(false);
       });
   };
 
@@ -72,6 +89,7 @@ const RegisterForm = () => {
         onValueChange={(value) =>
           setValue("accountType", value as "personal" | "farmer")
         }
+        required
       >
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select account type" />
@@ -81,8 +99,51 @@ const RegisterForm = () => {
           <SelectItem value="farmer">Farmer</SelectItem>
         </SelectContent>
       </Select>
-      <Input type="email" placeholder="Email" {...register("email")} />
-      <Input type="password" placeholder="Password" {...register("password")} />
+      <div>
+        <Input
+          placeholder="Email"
+          {...register("email", {
+            required: {
+              value: true,
+              message: "Email is required",
+            },
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              message: "Invalid email format",
+            },
+          })}
+        />
+        {errors.email ? (
+          <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+        ) : null}
+      </div>
+      <div>
+        <Input
+          type="password"
+          placeholder="Password"
+          {...register("password", {
+            minLength: {
+              value: 8,
+              message: "Password should be between 8-20 characters",
+            },
+            maxLength: {
+              value: 20,
+              message: "Password should be between 8-20 characters",
+            },
+            required: {
+              value: true,
+              message: "Password is required",
+            },
+            pattern: {
+              value: /^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/,
+              message: "Invalid password format",
+            },
+          })}
+        />
+        {errors.password ? (
+          <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+        ) : null}
+      </div>
 
       <p className="text-black/70">
         Already have an account?{" "}

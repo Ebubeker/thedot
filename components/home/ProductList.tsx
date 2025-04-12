@@ -61,10 +61,9 @@ const suggestions = [
 const ProductList = () => {
   return (
     <div>
-      ProductList
       <section className="py-8">
       <h2 className="text-2xl font-semibold mb-6">
-        See our <span className="italic">Suggestions</span>
+        Check out our <span className="italic">Products</span>
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {suggestions.map((item, idx) => (
