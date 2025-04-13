@@ -4,7 +4,11 @@ import { parseCookies } from "nookies";
 import { cookies } from "next/headers";
 import { redirect } from 'next/navigation'
 import Navbar from '@/components/general/Navbar';
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Home | TheDot.',
+}
 const layout = async ({children}: {children: React.ReactNode}) => {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;

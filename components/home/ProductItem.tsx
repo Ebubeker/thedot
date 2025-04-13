@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import ProdImage from "@/assets/images/prod.jpg";
 import { addRequest } from "@/assets/api/kerkese";
 import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
 
 const ProductItem = ({
   item,
@@ -30,7 +31,7 @@ const ProductItem = ({
 
   return (
     <div>
-      <div className="relative group">
+      <Link href={`/en/product/${item.id}`} className="relative group">
         <Image
           src={ProdImage}
           alt={item.name}
@@ -47,7 +48,7 @@ const ProductItem = ({
             Kërkesë për të blerë
           </Button>
         </div>
-      </div>
+      </Link>
       <div className="py-4">
         <h3 className="text-lg font-medium">
           <p className="text-[11px] text-gray-500 italic">
