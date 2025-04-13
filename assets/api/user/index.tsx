@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   getDocs,
   query,
   updateDoc,
@@ -60,10 +61,38 @@ export const useGetAllUsers = (type?: 'personal' | 'farmer') => {
   };
 };
 
+export const useGetUserWithID = (id: string) => {
+  const [user, setUser] = useState<User & {id: string} | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchUser = () => {
+      const q = query(collection(db, "users"), where(documentId(), "==", id));
+      
+      getDocs(q)
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            setUser({...(doc.data() as User), id: id});
+          });
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching user:", error);
+          setIsLoading(false);
+        });
+    };
+
+    fetchUser();
+  }, [id]);
+
+  return {
+    userInfo: user,
+    isLoading
+  };
+};
 
 export const useGetUser = (email: string) => {
-  const [user, setUser] = useState<User | undefined>(undefined);
+  const [user, setUser] = useState<User & { id: string } | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -73,7 +102,10 @@ export const useGetUser = (email: string) => {
       getDocs(q)
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            setUser(doc.data() as User);
+            setUser({
+              ...doc.data() as User,
+              id: doc.id
+            });
           });
           setIsLoading(false);
         })

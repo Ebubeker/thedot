@@ -1,39 +1,18 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import ProductList from "@/components/home/ProductList";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
-  const router = useRouter();
-
-  const handleLogout = () => {
-    try {
-      // Remove the token cookie directly
-      document.cookie =
-        "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-      // Show success message
-      toast.success("Logged out successfully");
-
-      // Redirect to login page
-      router.push("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Failed to logout. Please try again.");
-    }
-  };
+  const {userInfo} = useAuth();
 
   return (
-    <div className="container mx-auto my-[100px]">
+    <div className="max-sm:mx-6 sm:container mx-auto my-[100px]">
+      <div className="bg-gray-200 p-10 rounded-2xl">
+        <h1 className="font-bold text-xl">Welcome back {userInfo?.email}!</h1>
+        <p className="text-black/70 mt-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore id, nemo non voluptatum nam enim aspernatur earum cumque expedita, cupiditate iste ex quisquam eum saepe, tenetur quidem veritatis explicabo a eos error iusto fugiat. Error facere alias atque nihil nisi. Consequatur, labore quod perspiciatis possimus fuga nisi amet repellat veritatis.</p>
+      </div>
       <ProductList />
-      <button
-        onClick={handleLogout}
-        className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors"
-      >
-        Logout
-      </button>
     </div>
   );
 }

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/assets/api/firebase";
+import { useGetUser } from "@/assets/api/user";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const { userInfo, isLoading } = useGetUser(user?.email ? user.email : "");
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
@@ -15,5 +19,5 @@ export function useAuth() {
     return () => unsubscribe();
   }, []);
 
-  return { user, loading };
+  return { user, loading, userInfo, userInfoIsLoading: isLoading };
 }

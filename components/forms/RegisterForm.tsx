@@ -40,7 +40,6 @@ const RegisterForm = () => {
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
         setIsLoading(false);
         addUser({
           email: data.email,

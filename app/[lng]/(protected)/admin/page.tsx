@@ -5,7 +5,7 @@ import Businesses from "@/components/admin/Businesses";
 
 const Admin = () => {
   return (
-    <div className="mt-[100px] container mx-auto">
+    <div className="mt-[100px] max-sm:mx-6 sm:container mx-auto">
       <h1 className="text-3xl font-bold mb-10">Admin Panel</h1>
       <Tabs defaultValue="account" className="">
         <TabsList className="grid w-full grid-cols-2 bg-white border-b-[4px] dark:border-[#EAEAEA] rounded-0 w-[400px]">

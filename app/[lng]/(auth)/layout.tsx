@@ -18,14 +18,14 @@ const layout = async ({
 
   return (
     <div className="flex">
-      <div className="p-10 w-1/2 h-[100vh]">
+      <div className="p-10 max-md:hidden w-1/2 h-[100vh]">
         <Image
           src={Ferma}
           alt="Auth Image"
           className="w-full h-full object-cover rounded-3xl"
         />
       </div>
-      <div className="w-1/2 flex justify-center items-center">{children}</div>
+      <div className="w-full h-[100vh] md:w-1/2 flex justify-center items-center">{children}</div>
     </div>
   );
 };
